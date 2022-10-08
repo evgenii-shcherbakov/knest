@@ -14,10 +14,10 @@ class ArgumentsBuilder(
 
     private fun convertParameter(parameter: KParameter): Any? {
         return when {
-            parameter.type.javaType == controller.javaClass -> parameter to controller
-            parameter.type.javaType == ApplicationCall::class.java -> parameter to call
-            parameter.type.javaType == HttpMethod::class.java -> parameter to call.request.local.method
-            call.parameters.contains(parameter.name ?: "") -> parameter to call.parameters[parameter.name ?: ""]
+            parameter.type.javaType == controller.javaClass -> controller
+            parameter.type.javaType == ApplicationCall::class.java -> call
+            parameter.type.javaType == HttpMethod::class.java -> call.request.local.method
+            call.parameters.contains(parameter.name ?: "") -> call.parameters[parameter.name ?: ""]
             else -> null
         }
     }

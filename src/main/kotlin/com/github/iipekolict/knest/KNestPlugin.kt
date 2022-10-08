@@ -1,4 +1,4 @@
-package by.iipekolict.knest
+package com.github.iipekolict.knest
 
 import io.github.smiley4.ktorswaggerui.SwaggerUI
 import io.github.smiley4.ktorswaggerui.SwaggerUIPluginConfig

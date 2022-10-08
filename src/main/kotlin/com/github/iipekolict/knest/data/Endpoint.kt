@@ -1,4 +1,4 @@
-package by.iipekolict.knest.data
+package com.github.iipekolict.knest.data
 
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.*

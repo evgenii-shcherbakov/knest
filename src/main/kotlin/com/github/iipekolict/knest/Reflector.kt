@@ -1,4 +1,4 @@
-package by.iipekolict.knest
+package com.github.iipekolict.knest
 
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.route
@@ -7,9 +7,9 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.reflect.*
-import by.iipekolict.knest.annotations.classes.Controller
-import by.iipekolict.knest.annotations.methods.*
-import by.iipekolict.knest.data.Endpoint
+import com.github.iipekolict.knest.annotations.classes.Controller
+import com.github.iipekolict.knest.annotations.methods.*
+import com.github.iipekolict.knest.data.Endpoint
 import java.math.BigDecimal
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspendBy

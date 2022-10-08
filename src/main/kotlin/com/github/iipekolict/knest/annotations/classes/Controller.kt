@@ -1,10 +1,9 @@
-package by.iipekolict.knest.annotations.methods
+package com.github.iipekolict.knest.annotations.classes
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
-annotation class All(
+@Target(AnnotationTarget.CLASS)
+annotation class Controller(
     val path: String = "",
-    val paths: Array<String> = [],
     val description: String = "",
     val summary: String = "",
     val tags: Array<String> = [],

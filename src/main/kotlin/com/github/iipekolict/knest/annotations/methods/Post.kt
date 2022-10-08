@@ -1,9 +1,10 @@
-package by.iipekolict.knest.annotations.classes
+package com.github.iipekolict.knest.annotations.methods
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.CLASS)
-annotation class Controller(
+@Target(AnnotationTarget.FUNCTION)
+annotation class Post(
     val path: String = "",
+    val paths: Array<String> = [],
     val description: String = "",
     val summary: String = "",
     val tags: Array<String> = [],

@@ -60,7 +60,6 @@ publishing {
             pom {
                 name.set("KNest")
                 description.set("Nest-like framework based on Ktor")
-//                url.set("http://www.example.com/library")
 
                 licenses {
                     license {
@@ -76,12 +75,6 @@ publishing {
                         email.set("iipekolict@gmail.com")
                     }
                 }
-
-//                scm {
-//                    connection.set("scm:git:git://example.com/my-library.git")
-//                    developerConnection.set("scm:git:ssh://example.com/my-library.git")
-//                    url.set("http://example.com/my-library/")
-//                }
             }
         }
     }
@@ -92,10 +85,6 @@ publishing {
         }
     }
 }
-
-//signing {
-//    sign(publishing.publications["mavenJava"])
-//}
 
 tasks.javadoc {
     if (JavaVersion.current().isJava9Compatible) {

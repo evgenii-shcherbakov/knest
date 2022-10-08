@@ -1,6 +1,6 @@
 package com.github.iipekolict
 
-import com.github.iipekolict.controller.MainController
+import com.github.iipekolict.preview.controller.MainController
 import com.github.iipekolict.knest.KNest
 import io.ktor.http.*
 import io.ktor.serialization.gson.*

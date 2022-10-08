@@ -1,4 +1,4 @@
-package com.github.iipekolict.controller
+package com.github.iipekolict.preview.controller
 
 import com.github.iipekolict.knest.annotations.classes.Controller
 import com.github.iipekolict.knest.annotations.methods.Get

@@ -1,3 +1,3 @@
 rootProject.name = "KNest"
 
-include("framework", "preview")
+include(":framework", ":preview")

@@ -9,6 +9,9 @@ plugins {
 }
 
 allprojects {
+    group = libraryGroup
+    version = libraryVersion
+
     repositories {
         mavenCentral()
 
@@ -30,10 +33,9 @@ subprojects {
     publishing {
         publications {
             create<MavenPublication>("mavenJava") {
-                version = libraryVersion
-                group = libraryGroup
-                artifactId = libraryArtifactId
-
+                groupId = project.group.toString()
+                artifactId = project.name
+                version = project.version.toString()
                 from(components["java"])
 
                 versionMapping {

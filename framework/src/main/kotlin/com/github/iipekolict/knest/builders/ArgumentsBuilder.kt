@@ -1,9 +1,13 @@
 package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.properties.*
+import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
@@ -14,11 +18,17 @@ class ArgumentsBuilder(
     private val handler: KFunction<*>,
     private val call: ApplicationCall
 ) {
-    private fun convertParameterByType(parameter: KParameter): Any? {
+    private suspend fun convertParameterByType(parameter: KParameter): Any? {
         return when (parameter.type.javaType) {
             controller.javaClass -> controller
             ApplicationCall::class.java -> call
             HttpMethod::class.java -> call.request.local.method
+            MultiPartData::class.java -> call.receiveMultipart()
+            ApplicationRequest::class.java -> call.request
+            ApplicationResponse::class.java -> call.response
+            Headers::class.java -> call.request.headers
+            RequestCookies::class.java -> call.request.cookies
+            ResponseCookies::class.java -> call.response.cookies
             else -> null
         }
     }
@@ -61,7 +71,7 @@ class ArgumentsBuilder(
                 else -> value
             }
         } catch (e: Exception) {
-            throw RuntimeException("Can't convert parameter to provided type")
+            throw KNestException("Can't convert parameter to provided type")
         }
     }
 
@@ -71,34 +81,90 @@ class ArgumentsBuilder(
         val query: Query? = parameter.findAnnotation()
         val header: Header? = parameter.findAnnotation()
         val body: Body? = parameter.findAnnotation()
+        val cookies: Cookies? = parameter.findAnnotation()
+        val isHost: Boolean = parameter.findAnnotation<Host>() != null
+        val isIp: Boolean = parameter.findAnnotation<Ip>() != null
+        val file: File? = parameter.findAnnotation()
+        val isReq: Boolean = parameter.findAnnotation<Req>() != null
+        val isRes: Boolean = parameter.findAnnotation<Res>() != null
+        val isMethod: Boolean = parameter.findAnnotation<Method>() != null
 
         return when {
             isCall -> {
                 call
             }
-            param?.name?.isNotBlank() == true -> {
-                pipeParameter(parameter, call.parameters[param.name])
+            param != null -> {
+                if (param.name.isNotBlank()) {
+                    pipeParameter(parameter, call.parameters[param.name])
+                } else {
+                    call.parameters
+                }
             }
-            param?.name?.isBlank() == true -> {
-                call.parameters
+            query != null -> {
+                if (query.name.isNotBlank()) {
+                    pipeParameter(parameter, call.request.queryParameters[query.name])
+                } else {
+                    call.request.queryParameters
+                }
             }
-            query?.name?.isNotBlank() == true -> {
-                pipeParameter(parameter, call.request.queryParameters[query.name])
+            header != null -> {
+                if (header.name.isNotBlank()) {
+                    pipeParameter(parameter, call.request.headers[header.name])
+                } else {
+                    call.request.headers
+                }
             }
-            query?.name?.isBlank() == true -> {
-                call.request.queryParameters
+            body != null -> {
+                if (body.name.isNotBlank()) {
+                    pipeParameter(parameter, call.receive<Map<String, *>>()[body.name])
+                } else {
+                    call.receive(body.type)
+                }
             }
-            header?.name?.isNotBlank() == true -> {
-                pipeParameter(parameter, call.request.headers[header.name])
+            cookies != null -> {
+                if (cookies.name.isNotBlank()) {
+                    pipeParameter(parameter, call.request.cookies[cookies.name])
+                } else {
+                    call.request.cookies
+                }
             }
-            header?.name?.isBlank() == true -> {
-                call.request.headers
+            isHost -> {
+                call.request.host()
             }
-            body?.name?.isNotBlank() == true -> {
-                pipeParameter(parameter, call.receive<Map<String, *>>()[body.name])
+            isIp -> {
+                call.request.origin.remoteHost
             }
-            body?.name?.isBlank() == true -> {
-                call.receive(body.type)
+            file != null -> {
+                if (file.name.isNotBlank()) {
+                    var fileItem: PartData.FileItem? = null
+
+                    call.receiveMultipart().forEachPart {
+                        if (it is PartData.FileItem && it.originalFileName == file.name) {
+                            fileItem = it
+                        }
+                    }
+
+                    fileItem
+                } else {
+                    val fileItems = mutableSetOf<PartData.FileItem>()
+
+                    call.receiveMultipart().forEachPart {
+                        if (it is PartData.FileItem) {
+                            fileItems.add(it)
+                        }
+                    }
+
+                    fileItems.toSet()
+                }
+            }
+            isReq -> {
+                call.request
+            }
+            isRes -> {
+                call.response
+            }
+            isMethod -> {
+                call.request.local.method
             }
             else -> null
         }

@@ -3,6 +3,7 @@ package com.github.iipekolict.knest.builders
 import com.github.iipekolict.knest.annotations.classes.Controller
 import com.github.iipekolict.knest.annotations.methods.*
 import com.github.iipekolict.knest.data.Endpoint
+import com.github.iipekolict.knest.exceptions.KNestException
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.route
 import io.ktor.http.*
@@ -13,7 +14,7 @@ class ControllerBuilder(private val routing: Routing, private val controller: An
 
     private val controllerAnnotation: Controller
         get() = controller.javaClass.getDeclaredAnnotation(Controller::class.java)
-            ?: throw RuntimeException("Controller should be annotated by Controller annotation")
+            ?: throw KNestException("Controller should be annotated by Controller annotation")
 
     private val controllerSwaggerCallback: OpenApiRoute.() -> Unit
         get() = {

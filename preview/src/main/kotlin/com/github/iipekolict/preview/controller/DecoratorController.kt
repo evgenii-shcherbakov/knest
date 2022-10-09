@@ -105,4 +105,15 @@ class DecoratorController {
     suspend fun getRes(@Res res: ApplicationResponse): String {
         return res.javaClass.simpleName
     }
+
+    @Get("req-cookies")
+    suspend fun getReqCookies(@ReqCookies cookies: RequestCookies): Map<String, String> {
+        return cookies.rawCookies
+    }
+
+    @Get("res-cookies")
+    suspend fun getResCookies(@ResCookies cookies: ResponseCookies): String {
+        cookies.append(Cookie("Test", "123"))
+        return cookies["Test"]?.value ?: "No cookie"
+    }
 }

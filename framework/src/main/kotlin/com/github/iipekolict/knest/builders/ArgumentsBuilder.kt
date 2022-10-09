@@ -88,6 +88,8 @@ class ArgumentsBuilder(
         val isReq: Boolean = parameter.findAnnotation<Req>() != null
         val isRes: Boolean = parameter.findAnnotation<Res>() != null
         val isMethod: Boolean = parameter.findAnnotation<Method>() != null
+        val isReqCookies: Boolean = parameter.findAnnotation<ReqCookies>() != null
+        val isResCookies: Boolean = parameter.findAnnotation<ResCookies>() != null
 
         return when {
             isCall -> {
@@ -165,6 +167,12 @@ class ArgumentsBuilder(
             }
             isMethod -> {
                 call.request.local.method
+            }
+            isReqCookies -> {
+                call.request.cookies
+            }
+            isResCookies -> {
+                call.response.cookies
             }
             else -> null
         }

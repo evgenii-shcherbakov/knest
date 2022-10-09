@@ -139,7 +139,7 @@ class ArgumentsBuilder(
                     var fileItem: PartData.FileItem? = null
 
                     call.receiveMultipart().forEachPart {
-                        if (it is PartData.FileItem && it.originalFileName == file.name) {
+                        if (it is PartData.FileItem && it.name == file.name) {
                             fileItem = it
                         }
                     }

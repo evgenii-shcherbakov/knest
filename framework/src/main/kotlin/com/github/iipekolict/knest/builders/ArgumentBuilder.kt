@@ -13,10 +13,12 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.javaType
 
-class ArgumentsBuilder(
+class ArgumentBuilder(
+    private val parameter: KParameter,
     private val controller: Any,
-    private val handler: KFunction<*>,
-    private val call: ApplicationCall
+    private val call: ApplicationCall,
+    private val exception: Exception?,
+    private val func: KFunction<*>?
 ) {
     private suspend fun convertParameterByType(parameter: KParameter): Any? {
         return when (parameter.type.javaType) {
@@ -30,6 +32,8 @@ class ArgumentsBuilder(
             ResponseHeaders::class.java -> call.response.headers
             RequestCookies::class.java -> call.request.cookies
             ResponseCookies::class.java -> call.response.cookies
+            Exception::class.java -> exception?.cause
+            KFunction::class.java -> func
             else -> null
         }
     }
@@ -191,9 +195,7 @@ class ArgumentsBuilder(
         }
     }
 
-    suspend fun build(): Map<KParameter, Any?> {
-        return handler.parameters.associateWith {
-            convertParameterByAnnotation(it) ?: convertParameterByType(it)
-        }
+    suspend fun build(): Any? {
+        return convertParameterByType(parameter) ?: convertParameterByAnnotation(parameter)
     }
 }

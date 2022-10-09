@@ -4,6 +4,7 @@ import io.github.smiley4.ktorswaggerui.SwaggerUIPluginConfig
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.*
+import kotlin.reflect.KFunction
 
 class KNestConfigurationPublic {
     private var controllers: Set<Any> = emptySet()
@@ -11,6 +12,7 @@ class KNestConfigurationPublic {
     private var callLoggingConfiguration: (CallLoggingConfig.() -> Unit) = {}
     private var contentNegotiationConfiguration: (ContentNegotiationConfig.() -> Unit) = {}
     private var swaggerConfiguration: (SwaggerUIPluginConfig.() -> Unit) = {}
+    private var errorHandler: KFunction<*>? = null
 
     val configuration: KNestConfiguration
         get() = KNestConfiguration(
@@ -18,7 +20,8 @@ class KNestConfigurationPublic {
             corsConfiguration = corsConfiguration,
             callLoggingConfiguration = callLoggingConfiguration,
             contentNegotiationConfiguration = contentNegotiationConfiguration,
-            swaggerConfiguration = swaggerConfiguration
+            swaggerConfiguration = swaggerConfiguration,
+            errorHandler = errorHandler
         )
 
     fun setControllers(vararg varargControllers: Any) {
@@ -39,5 +42,9 @@ class KNestConfigurationPublic {
 
     fun swagger(configuration: SwaggerUIPluginConfig.() -> Unit) {
         swaggerConfiguration = configuration
+    }
+
+    fun setErrorHandler(customErrorHandler: KFunction<*>) {
+        errorHandler = customErrorHandler
     }
 }

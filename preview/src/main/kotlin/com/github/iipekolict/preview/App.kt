@@ -1,10 +1,8 @@
 package com.github.iipekolict.preview
 
-import com.github.iipekolict.preview.controller.MainController
 import com.github.iipekolict.knest.KNest
-import com.github.iipekolict.preview.controller.DecoratorController
-import com.github.iipekolict.preview.controller.PipeController
-import com.github.iipekolict.preview.controller.TypedController
+import com.github.iipekolict.preview.controller.*
+import com.github.iipekolict.preview.exceptions.errorHandler
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 
@@ -15,10 +13,13 @@ fun Application.setup() {
     install(KNest) {
         setControllers(
             MainController(),
+            ErrorController(),
             DecoratorController(),
             TypedController(),
             PipeController()
         )
+
+        setErrorHandler(::errorHandler)
 
         cors {
             anyHost()

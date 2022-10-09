@@ -37,7 +37,7 @@ val KNest = createApplicationPlugin(
 
     application.routing {
         configuration.controllers.map {
-            ControllerBuilder(this, it).build()
+            ControllerBuilder(this, it, configuration.errorHandler).build()
         }
     }
 }

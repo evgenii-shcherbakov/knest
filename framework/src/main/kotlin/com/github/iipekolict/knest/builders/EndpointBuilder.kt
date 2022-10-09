@@ -9,12 +9,13 @@ import kotlin.reflect.KFunction
 class EndpointBuilder(
     private val controller: Any,
     private val route: Route,
-    private val endpoint: Endpoint
+    private val endpoint: Endpoint,
+    private val errorHandler: KFunction<*>?
 ) {
 
     private fun createEndpointHandler(handler: KFunction<*>): Route.() -> Unit = {
         handle {
-            HandlerBuilder(controller, handler, call).build()
+            HandlerBuilder(controller, handler, call, errorHandler).build()
         }
     }
 

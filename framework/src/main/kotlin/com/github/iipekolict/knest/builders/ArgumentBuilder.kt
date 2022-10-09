@@ -98,6 +98,7 @@ class ArgumentBuilder(
         val isReqHeaders: Boolean = parameter.findAnnotation<ReqHeaders>() != null
         val isResHeaders: Boolean = parameter.findAnnotation<ResHeaders>() != null
         val isReqPath: Boolean = parameter.findAnnotation<ReqPath>() != null
+        val isException: Boolean = parameter.findAnnotation<Exc>() != null
 
         return when {
             isCall -> {
@@ -190,6 +191,9 @@ class ArgumentBuilder(
             }
             isReqPath -> {
                 call.request.path()
+            }
+            isException -> {
+                exception
             }
             else -> null
         }

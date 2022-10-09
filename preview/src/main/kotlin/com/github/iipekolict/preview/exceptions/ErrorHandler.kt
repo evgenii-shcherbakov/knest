@@ -1,6 +1,7 @@
 package com.github.iipekolict.preview.exceptions
 
 import com.github.iipekolict.knest.annotations.properties.Call
+import com.github.iipekolict.knest.annotations.properties.Exc
 import com.github.iipekolict.knest.annotations.properties.Method
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.http.*
@@ -9,7 +10,7 @@ import io.ktor.server.response.*
 import java.lang.Exception
 
 suspend fun errorHandler(
-    exception: Exception,
+    @Exc exception: Exception,
     @Call call: ApplicationCall,
     @Method method: HttpMethod
 ) {

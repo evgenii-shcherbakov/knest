@@ -127,4 +127,9 @@ class DecoratorController {
         headers.append("Test", "123")
         return headers.allValues().toMap()
     }
+
+    @Get("req-path")
+    suspend fun getRequestPath(@ReqPath path: String): String {
+        return path
+    }
 }

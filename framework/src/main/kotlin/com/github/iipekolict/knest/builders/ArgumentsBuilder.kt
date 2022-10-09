@@ -93,6 +93,7 @@ class ArgumentsBuilder(
         val isResCookies: Boolean = parameter.findAnnotation<ResCookies>() != null
         val isReqHeaders: Boolean = parameter.findAnnotation<ReqHeaders>() != null
         val isResHeaders: Boolean = parameter.findAnnotation<ResHeaders>() != null
+        val isReqPath: Boolean = parameter.findAnnotation<ReqPath>() != null
 
         return when {
             isCall -> {
@@ -182,6 +183,9 @@ class ArgumentsBuilder(
             }
             isResHeaders -> {
                 call.response.headers
+            }
+            isReqPath -> {
+                call.request.path()
             }
             else -> null
         }

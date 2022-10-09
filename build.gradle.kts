@@ -1,6 +1,5 @@
 val libraryVersion: String by project
 val libraryGroup: String by project
-val libraryArtifactId: String by project
 
 plugins {
     `java-library`

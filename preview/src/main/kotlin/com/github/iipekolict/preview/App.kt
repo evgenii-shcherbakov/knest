@@ -11,7 +11,7 @@ import io.ktor.server.application.*
 fun main(args: Array<String>): Unit =
     io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.launch() {
+fun Application.setup() {
     install(KNest) {
         setControllers(
             MainController(),
@@ -40,4 +40,8 @@ fun Application.launch() {
             }
         }
     }
+}
+
+fun Application.launch() {
+    setup()
 }

@@ -16,6 +16,8 @@ jobs:
           java-version: 18
       - name: Get git tag
         uses: olegtarasov/get-tag@v2.1
+      - name: Run tests
+        run: ./gradlew test
       - name: Build
         run: ./gradlew build
       - name: Create release

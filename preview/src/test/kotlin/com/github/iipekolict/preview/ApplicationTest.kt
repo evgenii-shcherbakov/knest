@@ -8,9 +8,7 @@ import io.ktor.server.testing.*
 class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
-        application {
-            launch()
-        }
+        application {}
 
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)

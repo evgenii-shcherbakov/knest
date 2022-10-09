@@ -9,6 +9,7 @@ import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import io.ktor.util.*
 
 @Controller("typed")
 class TypedController {
@@ -47,5 +48,11 @@ class TypedController {
     suspend fun getResponseCookies(cookies: ResponseCookies): String {
         cookies.append(Cookie("Test", "123"))
         return cookies["Test"]?.value ?: "No cookie"
+    }
+
+    @Get("res-headers")
+    suspend fun getResHeaders(headers: ResponseHeaders): Map<String, List<String>> {
+        headers.append("Test", "123")
+        return headers.allValues().toMap()
     }
 }

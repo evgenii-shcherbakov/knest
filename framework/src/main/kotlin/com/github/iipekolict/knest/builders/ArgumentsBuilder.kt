@@ -27,6 +27,7 @@ class ArgumentsBuilder(
             ApplicationRequest::class.java -> call.request
             ApplicationResponse::class.java -> call.response
             Headers::class.java -> call.request.headers
+            ResponseHeaders::class.java -> call.response.headers
             RequestCookies::class.java -> call.request.cookies
             ResponseCookies::class.java -> call.response.cookies
             else -> null
@@ -90,6 +91,8 @@ class ArgumentsBuilder(
         val isMethod: Boolean = parameter.findAnnotation<Method>() != null
         val isReqCookies: Boolean = parameter.findAnnotation<ReqCookies>() != null
         val isResCookies: Boolean = parameter.findAnnotation<ResCookies>() != null
+        val isReqHeaders: Boolean = parameter.findAnnotation<ReqHeaders>() != null
+        val isResHeaders: Boolean = parameter.findAnnotation<ResHeaders>() != null
 
         return when {
             isCall -> {
@@ -173,6 +176,12 @@ class ArgumentsBuilder(
             }
             isResCookies -> {
                 call.response.cookies
+            }
+            isReqHeaders -> {
+                call.request.headers
+            }
+            isResHeaders -> {
+                call.response.headers
             }
             else -> null
         }

@@ -116,4 +116,15 @@ class DecoratorController {
         cookies.append(Cookie("Test", "123"))
         return cookies["Test"]?.value ?: "No cookie"
     }
+
+    @Get("req-headers")
+    suspend fun getResHeaders(@ReqHeaders headers: Headers): Map<String, List<String>> {
+        return headers.toMap()
+    }
+
+    @Get("res-headers")
+    suspend fun getResHeaders(@ResHeaders headers: ResponseHeaders): Map<String, List<String>> {
+        headers.append("Test", "123")
+        return headers.allValues().toMap()
+    }
 }

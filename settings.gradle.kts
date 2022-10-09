@@ -1,3 +1,9 @@
 rootProject.name = "KNest"
 
-include(":framework", ":preview")
+val submodules = mutableSetOf(":framework")
+
+if (System.getenv("JITPACK") == null) {
+    submodules.add(":preview")
+}
+
+include(submodules)

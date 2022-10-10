@@ -1,5 +1,6 @@
 package com.github.iipekolict.knest.data
 
+import com.github.iipekolict.knest.configuration.ExceptionConfiguration
 import io.github.smiley4.ktorswaggerui.SwaggerUIPluginConfig
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -39,5 +40,9 @@ class KNestConfigurationPublic {
 
     fun swagger(configuration: SwaggerUIPluginConfig.() -> Unit) {
         swaggerConfiguration = configuration
+    }
+
+    fun exceptionHandling(configuration: ExceptionConfiguration.() -> Unit) {
+        ExceptionConfiguration.apply(configuration)
     }
 }

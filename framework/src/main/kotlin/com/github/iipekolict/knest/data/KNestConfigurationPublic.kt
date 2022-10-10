@@ -1,10 +1,10 @@
 package com.github.iipekolict.knest.data
 
+import com.github.iipekolict.knest.configuration.ExceptionConfiguration
 import io.github.smiley4.ktorswaggerui.SwaggerUIPluginConfig
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.*
-import kotlin.reflect.KFunction
 
 class KNestConfigurationPublic {
     private var controllers: Set<Any> = emptySet()
@@ -12,7 +12,6 @@ class KNestConfigurationPublic {
     private var callLoggingConfiguration: (CallLoggingConfig.() -> Unit) = {}
     private var contentNegotiationConfiguration: (ContentNegotiationConfig.() -> Unit) = {}
     private var swaggerConfiguration: (SwaggerUIPluginConfig.() -> Unit) = {}
-    private var errorHandler: KFunction<*>? = null
 
     val configuration: KNestConfiguration
         get() = KNestConfiguration(
@@ -20,8 +19,7 @@ class KNestConfigurationPublic {
             corsConfiguration = corsConfiguration,
             callLoggingConfiguration = callLoggingConfiguration,
             contentNegotiationConfiguration = contentNegotiationConfiguration,
-            swaggerConfiguration = swaggerConfiguration,
-            errorHandler = errorHandler
+            swaggerConfiguration = swaggerConfiguration
         )
 
     fun setControllers(vararg varargControllers: Any) {
@@ -44,7 +42,7 @@ class KNestConfigurationPublic {
         swaggerConfiguration = configuration
     }
 
-    fun setErrorHandler(customErrorHandler: KFunction<*>) {
-        errorHandler = customErrorHandler
+    fun exceptionHandling(configuration: ExceptionConfiguration.() -> Unit) {
+        ExceptionConfiguration.apply(configuration)
     }
 }

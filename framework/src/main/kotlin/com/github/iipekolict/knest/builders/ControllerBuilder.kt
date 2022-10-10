@@ -8,14 +8,9 @@ import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.route
 import io.ktor.http.*
 import io.ktor.server.routing.*
-import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberFunctions
 
-class ControllerBuilder(
-    private val routing: Routing,
-    private val controller: Any,
-    private val errorHandler: KFunction<*>?
-) {
+class ControllerBuilder(private val routing: Routing, private val controller: Any) {
 
     private val controllerAnnotation: Controller
         get() = controller.javaClass.getDeclaredAnnotation(Controller::class.java)
@@ -135,7 +130,7 @@ class ControllerBuilder(
     fun build() {
         routing.route(controllerAnnotation.path, controllerSwaggerCallback) {
             endpoints.map {
-                EndpointBuilder(controller, this, it, errorHandler).build()
+                EndpointBuilder(controller, this, it).build()
             }
         }
     }

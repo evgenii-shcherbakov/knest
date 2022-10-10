@@ -2,7 +2,7 @@ package com.github.iipekolict.preview
 
 import com.github.iipekolict.knest.KNest
 import com.github.iipekolict.preview.controller.*
-import com.github.iipekolict.preview.exceptions.errorHandler
+import com.github.iipekolict.preview.exceptions.ExceptionContainer
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 
@@ -13,13 +13,15 @@ fun Application.setup() {
     install(KNest) {
         setControllers(
             MainController(),
-            ErrorController(),
+            ExceptionController(),
             DecoratorController(),
             TypedController(),
             PipeController()
         )
 
-        setErrorHandler(::errorHandler)
+        exceptionHandling {
+            setContainers(ExceptionContainer)
+        }
 
         cors {
             anyHost()

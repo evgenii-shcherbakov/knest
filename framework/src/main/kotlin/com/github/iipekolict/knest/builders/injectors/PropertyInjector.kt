@@ -2,6 +2,7 @@ package com.github.iipekolict.knest.builders.injectors
 
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.server.application.*
+import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.jvm.javaType
 
@@ -11,6 +12,7 @@ abstract class PropertyInjector<A, P> {
     protected lateinit var call: ApplicationCall
 
     protected var exception: Exception? = null
+    protected var handler: KFunction<*>? = null
 
     private var annotationInstance: A? = null
 
@@ -20,11 +22,13 @@ abstract class PropertyInjector<A, P> {
     fun injectArgs(
         outParameter: KParameter,
         outCall: ApplicationCall,
-        outException: Exception?
+        outException: Exception?,
+        outHandler: KFunction<*>?
     ): PropertyInjector<A, P> {
         parameter = outParameter
         call = outCall
         exception = outException
+        handler = outHandler
 
         return this
     }

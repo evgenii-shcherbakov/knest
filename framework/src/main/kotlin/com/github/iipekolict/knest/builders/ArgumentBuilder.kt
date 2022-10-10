@@ -37,7 +37,8 @@ class ArgumentBuilder(
         ResCookiesInjector::class,
         ReqHeadersInjector::class,
         ResHeadersInjector::class,
-        ReqPathInjector::class
+        ReqPathInjector::class,
+        HandlerInjector::class
     )
 
     private suspend fun convertParameterByType(): Any? {
@@ -60,7 +61,7 @@ class ArgumentBuilder(
 
     private suspend fun convertParameterByAnnotation(): Any? {
         return injectors.firstNotNullOfOrNull {
-            val instance = it.createInstance().injectArgs(parameter, call, exception)
+            val instance = it.createInstance().injectArgs(parameter, call, exception, func)
             if (instance.canActivate()) instance.inject() else null
         }
     }

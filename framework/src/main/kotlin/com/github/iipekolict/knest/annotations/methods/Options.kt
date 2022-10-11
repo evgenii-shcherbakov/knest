@@ -4,10 +4,5 @@ package com.github.iipekolict.knest.annotations.methods
 @Target(AnnotationTarget.FUNCTION)
 annotation class Options(
     val path: String = "",
-    val paths: Array<String> = [],
-    val description: String = "",
-    val summary: String = "",
-    val tags: Array<String> = [],
-    val operationId: String = "",
-    val securitySchemeName: String = ""
+    val paths: Array<String> = []
 )

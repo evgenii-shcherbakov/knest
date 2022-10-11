@@ -11,13 +11,15 @@ fun main(args: Array<String>): Unit =
 
 fun Application.setup() {
     install(KNest) {
-        setControllers(
-            MainController(),
-            ExceptionController(),
-            DecoratorController(),
-            TypedController(),
-            PipeController()
-        )
+        framework {
+            setControllers(
+                MainController(),
+                ExceptionController(),
+                DecoratorController(),
+                TypedController(),
+                PipeController()
+            )
+        }
 
         exceptionHandling {
             setContainers(ExceptionContainer)

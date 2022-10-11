@@ -1,6 +1,6 @@
 package com.github.iipekolict.knest.builders
 
-import com.github.iipekolict.knest.builders.injectors.*
+import com.github.iipekolict.knest.builders.injectors.properties.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -18,28 +18,6 @@ class ArgumentBuilder(
     private val exception: Exception?,
     private val func: KFunction<*>?
 ) {
-
-    private val injectors = setOf(
-        ExceptionInjector::class,
-        CallInjector::class,
-        HostInjector::class,
-        IpInjector::class,
-        MethodInjector::class,
-        ParamInjector::class,
-        QueryInjector::class,
-        HeaderInjector::class,
-        BodyInjector::class,
-        CookiesInjector::class,
-        FileInjector::class,
-        ReqInjector::class,
-        ResInjector::class,
-        ReqCookiesInjector::class,
-        ResCookiesInjector::class,
-        ReqHeadersInjector::class,
-        ResHeadersInjector::class,
-        ReqPathInjector::class,
-        HandlerInjector::class
-    )
 
     private suspend fun convertParameterByType(): Any? {
         return when (parameter.type.javaType) {
@@ -60,7 +38,7 @@ class ArgumentBuilder(
     }
 
     private suspend fun convertParameterByAnnotation(): Any? {
-        return injectors.firstNotNullOfOrNull {
+        return propertyInjectors.firstNotNullOfOrNull {
             val instance = it.createInstance().injectArgs(parameter, call, exception, func)
             if (instance.canActivate()) instance.inject() else null
         }
@@ -68,5 +46,29 @@ class ArgumentBuilder(
 
     suspend fun build(): Any? {
         return convertParameterByType() ?: convertParameterByAnnotation()
+    }
+
+    companion object {
+        private val propertyInjectors = setOf(
+            ExceptionInjector::class,
+            CallInjector::class,
+            HostInjector::class,
+            IpInjector::class,
+            MethodInjector::class,
+            ParamInjector::class,
+            QueryInjector::class,
+            HeaderInjector::class,
+            BodyInjector::class,
+            CookiesInjector::class,
+            FileInjector::class,
+            ReqInjector::class,
+            ResInjector::class,
+            ReqCookiesInjector::class,
+            ResCookiesInjector::class,
+            ReqHeadersInjector::class,
+            ResHeadersInjector::class,
+            ReqPathInjector::class,
+            HandlerInjector::class
+        )
     }
 }

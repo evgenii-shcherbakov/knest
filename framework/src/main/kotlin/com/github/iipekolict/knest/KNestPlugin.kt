@@ -1,6 +1,7 @@
 package com.github.iipekolict.knest
 
 import com.github.iipekolict.knest.builders.ControllerBuilder
+import com.github.iipekolict.knest.configuration.FrameworkConfiguration
 import com.github.iipekolict.knest.data.KNestConfiguration
 import com.github.iipekolict.knest.data.KNestConfigurationPublic
 import io.github.smiley4.ktorswaggerui.SwaggerUI
@@ -36,7 +37,7 @@ val KNest = createApplicationPlugin(
     }
 
     application.routing {
-        configuration.controllers.map {
+        FrameworkConfiguration.configuration.controllers.map {
             ControllerBuilder(this, it).build()
         }
     }

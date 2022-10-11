@@ -1,6 +1,6 @@
 package com.github.iipekolict.knest.validators
 
-abstract class BaseValidator<C> {
+abstract class ConfigurationValidator<C> {
 
     abstract fun validate(configuration: C)
 }

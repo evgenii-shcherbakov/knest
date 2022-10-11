@@ -1,10 +1,10 @@
-package com.github.iipekolict.knest.builders.injectors
+package com.github.iipekolict.knest.builders.injectors.properties
 
 import com.github.iipekolict.knest.annotations.properties.Body
 import io.ktor.server.request.*
 import kotlin.reflect.full.findAnnotation
 
-class BodyInjector : PropertyInjector<Body, Any?>() {
+class BodyInjector : com.github.iipekolict.knest.builders.injectors.properties.PropertyInjector<Body, Any?>() {
 
     override fun findAnnotation(): Body? {
         return parameter.findAnnotation()

@@ -1,23 +1,19 @@
-package com.github.iipekolict.knest.builders.injectors
+package com.github.iipekolict.knest.builders.injectors.properties
 
+import com.github.iipekolict.knest.builders.injectors.SuspendAnnotationInjector
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.server.application.*
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.jvm.javaType
 
-abstract class PropertyInjector<A, P> {
+abstract class PropertyInjector<A : Annotation, P> : SuspendAnnotationInjector<A, P>() {
 
     protected lateinit var parameter: KParameter
     protected lateinit var call: ApplicationCall
 
     protected var exception: Exception? = null
     protected var handler: KFunction<*>? = null
-
-    private var annotationInstance: A? = null
-
-    protected val annotation: A
-        get() = annotationInstance ?: throw KNestException("Can't use provided annotation here")
 
     fun injectArgs(
         outParameter: KParameter,
@@ -74,12 +70,4 @@ abstract class PropertyInjector<A, P> {
             throw KNestException("Can't convert parameter to provided type")
         }
     }
-
-    fun canActivate(): Boolean {
-        annotationInstance = findAnnotation()
-        return annotationInstance != null
-    }
-
-    protected abstract fun findAnnotation(): A?
-    abstract suspend fun inject(): P
 }

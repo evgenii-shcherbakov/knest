@@ -6,7 +6,6 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.*
 
 class KNestConfiguration(
-    val controllers: Set<Any>,
     val corsConfiguration: (CORSConfig.() -> Unit)?,
     val callLoggingConfiguration: (CallLoggingConfig.() -> Unit),
     val contentNegotiationConfiguration: (ContentNegotiationConfig.() -> Unit),

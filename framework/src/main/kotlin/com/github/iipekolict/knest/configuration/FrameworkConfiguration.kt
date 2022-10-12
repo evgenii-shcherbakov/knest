@@ -2,7 +2,7 @@ package com.github.iipekolict.knest.configuration
 
 import com.github.iipekolict.knest.validators.FrameworkConfigurationValidator
 
-object FrameworkConfiguration {
+object FrameworkConfiguration : ModularConfiguration<FrameworkConfiguration.Configuration>() {
 
     private val controllers: MutableSet<Any> = mutableSetOf()
 
@@ -15,7 +15,7 @@ object FrameworkConfiguration {
         }
     }
 
-    val configuration: Configuration
+    override val configuration: Configuration
         get() = Configuration(controllers)
 
     fun setControllers(vararg newControllers: Any) {

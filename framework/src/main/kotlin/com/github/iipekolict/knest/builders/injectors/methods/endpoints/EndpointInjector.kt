@@ -23,24 +23,7 @@ abstract class EndpointInjector<A : Annotation> : NonSuspendAnnotationInjector<A
     }
 
     protected val swaggerCallback: OpenApiRoute.() -> Unit
-        get() {
-            val swaggerAnnotation: Swagger? = handler.findAnnotation()
-
-            return if (swaggerAnnotation == null) {
-                {}
-            } else {
-                {
-                    description = swaggerAnnotation.description
-                    summary = swaggerAnnotation.summary
-                    operationId = swaggerAnnotation.operationId
-                    securitySchemeName = swaggerAnnotation.securitySchemeName
-
-                    if (swaggerAnnotation.tags.isNotEmpty()) {
-                        tags = swaggerAnnotation.tags.toList()
-                    }
-                }
-            }
-        }
+        get() = SwaggerInjector(handler).inject()
 
     protected val swaggerAnnotation: Swagger?
         get() = handler.findAnnotation()

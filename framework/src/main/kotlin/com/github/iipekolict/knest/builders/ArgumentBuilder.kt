@@ -49,6 +49,7 @@ class ArgumentBuilder(
     }
 
     companion object {
+
         private val propertyInjectors = setOf(
             ExceptionInjector::class,
             CallInjector::class,

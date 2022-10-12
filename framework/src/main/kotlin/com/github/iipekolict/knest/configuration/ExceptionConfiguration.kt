@@ -6,7 +6,7 @@ import com.github.iipekolict.knest.validators.ExceptionConfigurationValidator
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberFunctions
 
-object ExceptionConfiguration {
+object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Configuration>() {
 
     private var handlers: MutableSet<Handler> = mutableSetOf()
 
@@ -42,7 +42,7 @@ object ExceptionConfiguration {
         }
     }
 
-    val configuration: Configuration
+    override val configuration: Configuration
         get() = Configuration(handlers)
 
     fun setHandlers(vararg customHandlers: KFunction<*>) {

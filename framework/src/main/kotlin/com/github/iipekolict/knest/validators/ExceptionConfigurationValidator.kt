@@ -8,7 +8,9 @@ object ExceptionConfigurationValidator : ConfigurationValidator<ExceptionConfigu
 
     private fun validateHandlers(handlers: Set<ExceptionConfiguration.Handler>) {
         val defaultHandlersCount = handlers.count { handler ->
-            handler.handler.annotations.any { it is DefaultExceptionHandler }
+            handler.handler.annotations.any {
+                it is DefaultExceptionHandler
+            }
         }
 
         if (defaultHandlersCount > 1) {

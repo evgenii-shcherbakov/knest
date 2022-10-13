@@ -1,6 +1,7 @@
 package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.builders.injectors.properties.*
+import com.github.iipekolict.knest.configuration.FrameworkConfiguration
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -69,7 +70,8 @@ class ArgumentBuilder(
             ReqHeadersInjector::class,
             ResHeadersInjector::class,
             ReqPathInjector::class,
-            HandlerInjector::class
+            HandlerInjector::class,
+            *FrameworkConfiguration.configuration.propertyInjectors.toTypedArray()
         )
     }
 }

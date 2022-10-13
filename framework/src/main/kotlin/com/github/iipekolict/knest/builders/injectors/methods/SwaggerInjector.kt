@@ -1,4 +1,4 @@
-package com.github.iipekolict.knest.builders.injectors.methods.endpoints
+package com.github.iipekolict.knest.builders.injectors.methods
 
 import com.github.iipekolict.knest.annotations.Swagger
 import com.github.iipekolict.knest.builders.injectors.NonSuspendAnnotationInjector

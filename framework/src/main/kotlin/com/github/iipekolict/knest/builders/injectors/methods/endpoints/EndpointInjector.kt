@@ -2,6 +2,7 @@ package com.github.iipekolict.knest.builders.injectors.methods.endpoints
 
 import com.github.iipekolict.knest.annotations.Swagger
 import com.github.iipekolict.knest.builders.injectors.NonSuspendAnnotationInjector
+import com.github.iipekolict.knest.builders.injectors.methods.SwaggerInjector
 import com.github.iipekolict.knest.data.Endpoint
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import kotlin.reflect.KFunction

@@ -1,6 +1,7 @@
 package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.classes.Controller
+import com.github.iipekolict.knest.builders.injectors.methods.SwaggerInjector
 import com.github.iipekolict.knest.builders.injectors.methods.endpoints.*
 import com.github.iipekolict.knest.data.Endpoint
 import com.github.iipekolict.knest.exceptions.KNestException

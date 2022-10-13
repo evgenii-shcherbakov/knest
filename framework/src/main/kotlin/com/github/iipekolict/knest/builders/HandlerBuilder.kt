@@ -26,7 +26,8 @@ class HandlerBuilder(
         endpointHandler: KFunction<*>?
     ): Map<KParameter, Any?> {
         return func.parameters.associateWith {
-            ArgumentBuilder(it, container ?: controller, call, exception, endpointHandler).build()
+            ArgumentBuilder(it, container ?: controller, call, exception, endpointHandler)
+                .build()
         }
     }
 
@@ -82,8 +83,8 @@ class HandlerBuilder(
 
         if (handlersResult == null) {
             call.respond(
-                HttpStatusCode.InternalServerError,
-                mapOf("message" to exc.message)
+                status = HttpStatusCode.InternalServerError,
+                message = mapOf("message" to exc.message)
             )
         }
     }

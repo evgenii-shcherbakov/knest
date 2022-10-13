@@ -4,11 +4,13 @@ import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
 import com.github.iipekolict.knest.configuration.ExceptionConfiguration
 import com.github.iipekolict.knest.exceptions.KNestException
 
-object ExceptionConfigurationValidator : BaseValidator<ExceptionConfiguration.Configuration>() {
+object ExceptionConfigurationValidator : ConfigurationValidator<ExceptionConfiguration.Configuration>() {
 
     private fun validateHandlers(handlers: Set<ExceptionConfiguration.Handler>) {
         val defaultHandlersCount = handlers.count { handler ->
-            handler.handler.annotations.any { it is DefaultExceptionHandler }
+            handler.handler.annotations.any {
+                it is DefaultExceptionHandler
+            }
         }
 
         if (defaultHandlersCount > 1) {

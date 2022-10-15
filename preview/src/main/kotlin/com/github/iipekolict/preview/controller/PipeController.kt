@@ -7,18 +7,20 @@ import com.github.iipekolict.knest.annotations.properties.Param
 @Controller("pipe")
 class PipeController {
 
+    class Response<T>(val id: T)
+
     @Get("{id}/int")
-    suspend fun getParamInt(@Param("id") id: Int): Map<String, Any> {
-        return mapOf("id" to id)
+    suspend fun getParamInt(@Param("id") id: Int): Response<Int> {
+        return Response(id)
     }
 
     @Get("{id}/float")
-    suspend fun getParamFloat(@Param("id") id: Float): Map<String, Any> {
-        return mapOf("id" to id)
+    suspend fun getParamFloat(@Param("id") id: Float): Response<Float> {
+        return Response(id)
     }
 
     @Get("{id}/double")
-    suspend fun getParamDouble(@Param("id") id: Double): Map<String, Any> {
-        return mapOf("id" to id)
+    suspend fun getParamDouble(@Param("id") id: Double): Response<Double> {
+        return Response(id)
     }
 }

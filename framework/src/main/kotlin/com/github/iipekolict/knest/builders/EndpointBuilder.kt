@@ -2,6 +2,7 @@ package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.data.Endpoint
 import io.github.smiley4.ktorswaggerui.dsl.route
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import kotlin.reflect.KFunction
@@ -19,11 +20,13 @@ class EndpointBuilder(
     }
 
     fun build() {
-        endpoint.paths.map { path ->
+        endpoint.paths.forEach { path ->
             val endpointHandler = createEndpointHandler(endpoint.handler)
 
             if (endpoint.method == null) {
-                route.route(path, endpoint.swaggerCallback, endpointHandler)
+                HttpMethod.DefaultMethods.forEach {
+                    route.route(path, it, endpoint.swaggerCallback, endpointHandler)
+                }
             } else {
                 route.route(path, endpoint.method, endpoint.swaggerCallback, endpointHandler)
             }

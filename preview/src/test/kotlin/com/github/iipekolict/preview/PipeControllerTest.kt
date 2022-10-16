@@ -35,7 +35,7 @@ class PipeControllerTest {
                         response.id != number.toString()
                     }
                 }
-            }
+        }
     }
 
     @Test

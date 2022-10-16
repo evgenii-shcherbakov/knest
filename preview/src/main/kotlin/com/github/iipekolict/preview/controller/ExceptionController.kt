@@ -13,7 +13,7 @@ class ExceptionController {
     }
 
     @Get("default")
-    suspend fun getDefaultError(): String {
-        throw Exception("Default error")
+    suspend fun getDefaultException(): String {
+        throw Exception("Default exception")
     }
 }

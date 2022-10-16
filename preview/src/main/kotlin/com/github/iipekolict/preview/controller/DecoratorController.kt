@@ -18,7 +18,7 @@ class DecoratorController {
 
     @Get("call")
     suspend fun getCall(@Call call: Any): String {
-        return call.javaClass.simpleName
+        return call::class.simpleName ?: "No call"
     }
 
     @Get("param/{id}")
@@ -42,7 +42,7 @@ class DecoratorController {
     }
 
     @Get("header")
-    suspend fun getHeader(@Header("Upgrade-Insecure-Requests") header: String?): String {
+    suspend fun getHeader(@Header("test") header: String?): String {
         return header ?: "No header"
     }
 
@@ -62,8 +62,8 @@ class DecoratorController {
     }
 
     @Get("cookies")
-    suspend fun getCookie(@Cookies("any") cookie: Cookie?): String {
-        return cookie?.name ?: "No cookie"
+    suspend fun getCookie(@Cookies("test") cookie: String?): String {
+        return cookie ?: "No cookie"
     }
 
     @Get("cookies/all")
@@ -98,17 +98,17 @@ class DecoratorController {
 
     @Get("req")
     suspend fun getReq(@Req req: ApplicationRequest): String {
-        return req.javaClass.simpleName
+        return req::class.simpleName ?: "No req"
     }
 
     @Get("res")
     suspend fun getRes(@Res res: ApplicationResponse): String {
-        return res.javaClass.simpleName
+        return res::class.simpleName ?: "No res"
     }
 
     @Get("req-cookies")
-    suspend fun getReqCookies(@ReqCookies cookies: RequestCookies): Map<String, String> {
-        return cookies.rawCookies
+    suspend fun getReqCookies(@ReqCookies cookies: RequestCookies): String {
+        return cookies::class.simpleName ?: "No req cookies"
     }
 
     @Get("res-cookies")
@@ -118,14 +118,14 @@ class DecoratorController {
     }
 
     @Get("req-headers")
-    suspend fun getResHeaders(@ReqHeaders headers: Headers): Map<String, List<String>> {
-        return headers.toMap()
+    suspend fun getResHeaders(@ReqHeaders headers: Headers): String {
+        return headers::class.simpleName ?: "No req headers"
     }
 
     @Get("res-headers")
-    suspend fun getResHeaders(@ResHeaders headers: ResponseHeaders): Map<String, List<String>> {
+    suspend fun getResHeaders(@ResHeaders headers: ResponseHeaders): String {
         headers.append("Test", "123")
-        return headers.allValues().toMap()
+        return headers["Test"] ?: "No header"
     }
 
     @Get("req-path")

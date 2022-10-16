@@ -10,10 +10,20 @@ object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Conf
 
     private var handlers: MutableSet<Handler> = mutableSetOf()
 
-    class Handler(
+    data class Handler(
         val container: Any?,
         val handler: KFunction<*>
-    )
+    ) {
+
+        val fullName: String
+            get() {
+                if (container == null || container::class.simpleName == null) {
+                    return handler.name
+                }
+
+                return "${container::class.simpleName}.${handler.name}"
+            }
+    }
 
     class Configuration(val handlers: Set<Handler>) {
 
@@ -47,22 +57,30 @@ object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Conf
 
     fun setHandlers(vararg customHandlers: KFunction<*>) {
         handlers.addAll(
-            customHandlers.map {
-                Handler(null, it)
+            customHandlers.mapNotNull { handler ->
+                if (handlers.any { it.fullName == handler.name }) {
+                    Handler(null, handler)
+                } else {
+                    null
+                }
             }
         )
     }
 
     fun setContainers(vararg customContainers: Any) {
         handlers.addAll(
-            customContainers.map { controller ->
-                controller::class.declaredMemberFunctions.mapNotNull { method ->
+            customContainers.map { container ->
+                container::class.declaredMemberFunctions.mapNotNull { method ->
                     val isHandler: Boolean = method.annotations.any {
                         it is DefaultExceptionHandler || it is ExceptionHandler
                     }
 
-                    if (isHandler) {
-                        Handler(controller, method)
+                    val isExists: Boolean = handlers.any {
+                        it.fullName == "${container::class.simpleName ?: ""}.${method.name}"
+                    }
+
+                    if (isHandler && !isExists) {
+                        Handler(container, method)
                     } else {
                         null
                     }

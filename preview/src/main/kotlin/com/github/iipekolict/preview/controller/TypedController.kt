@@ -4,6 +4,7 @@ import com.github.iipekolict.knest.annotations.classes.Controller
 import com.github.iipekolict.knest.annotations.methods.All
 import com.github.iipekolict.knest.annotations.methods.Get
 import com.github.iipekolict.knest.annotations.methods.Post
+import io.ktor.client.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -16,7 +17,7 @@ class TypedController {
 
     @Get("call")
     suspend fun getCall(call: ApplicationCall): String {
-        return call.javaClass.simpleName
+        return call::class.simpleName ?: "No call"
     }
 
     @All("method")
@@ -31,17 +32,17 @@ class TypedController {
 
     @Get("req")
     suspend fun getReq(req: ApplicationRequest): String {
-        return req.javaClass.simpleName
+        return req::class.simpleName ?: "No req"
     }
 
     @Get("res")
     suspend fun getRes(res: ApplicationResponse): String {
-        return res.javaClass.simpleName
+        return res::class.simpleName ?: "No res"
     }
 
     @Get("req-cookies")
-    suspend fun getRequestCookies(cookies: RequestCookies): Map<String, String> {
-        return cookies.rawCookies
+    suspend fun getRequestCookies(cookies: RequestCookies): String {
+        return cookies::class.simpleName ?: "No req cookies"
     }
 
     @Get("res-cookies")
@@ -51,8 +52,8 @@ class TypedController {
     }
 
     @Get("res-headers")
-    suspend fun getResHeaders(headers: ResponseHeaders): Map<String, List<String>> {
+    suspend fun getResHeaders(headers: ResponseHeaders): String {
         headers.append("Test", "123")
-        return headers.allValues().toMap()
+        return headers["Test"] ?: "No header"
     }
 }

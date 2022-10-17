@@ -20,8 +20,9 @@ object FrameworkConfiguration : ModularConfiguration<FrameworkConfiguration.Conf
         }
     }
 
-    override val configuration: Configuration
-        get() = Configuration(controllers, propertyInjectors)
+    override fun get(): Configuration {
+        return Configuration(controllers, propertyInjectors)
+    }
 
     fun setControllers(vararg newControllers: Any) {
         controllers.addAll(newControllers)

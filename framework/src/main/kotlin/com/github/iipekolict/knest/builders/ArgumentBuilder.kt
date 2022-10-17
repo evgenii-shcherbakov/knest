@@ -82,7 +82,7 @@ class ArgumentBuilder(
             MiddlewareAnnotationInjector::class,
             AppInjector::class,
             AppConfigInjector::class,
-            *FrameworkConfiguration.configuration.propertyInjectors.toTypedArray()
+            *FrameworkConfiguration.get().propertyInjectors.toTypedArray()
         )
     }
 }

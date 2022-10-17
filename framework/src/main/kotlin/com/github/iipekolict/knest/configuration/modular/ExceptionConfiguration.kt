@@ -39,8 +39,9 @@ object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Conf
         }
     }
 
-    override val configuration: Configuration
-        get() = Configuration(handlers)
+    override fun get(): Configuration {
+        return Configuration(handlers)
+    }
 
     fun setHandlers(vararg customHandlers: KFunction<*>) {
         handlers.addAll(

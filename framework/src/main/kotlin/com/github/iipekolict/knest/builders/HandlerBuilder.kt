@@ -118,7 +118,7 @@ class HandlerBuilder(
 
     private suspend fun handleException(exception: Exception) {
         val exc = exception.cause as? Exception? ?: exception
-        val exceptionHandlers = ExceptionConfiguration.configuration.sortedHandlers
+        val exceptionHandlers = ExceptionConfiguration.get().sortedHandlers
 
         if (exceptionHandlers.firstNotNullOfOrNull { checkExceptionHandler(exc, it) } == null) {
             call.respond(
@@ -148,11 +148,25 @@ class HandlerBuilder(
         return null
     }
 
+    private suspend fun handleAllMiddlewares(): Boolean {
+        val middlewareConfiguration = MiddlewareConfiguration.get()
+
+        val globalMiddlewaresResult = middlewareConfiguration.globalMiddlewares.firstNotNullOfOrNull {
+            executeFunc(it.handler, it.container, handler, null)
+        }
+
+        if (globalMiddlewaresResult == true) return false
+
+        val middlewaresResult = middlewareConfiguration.middlewares.firstNotNullOfOrNull {
+            handleMiddleware(it)
+        }
+
+        return middlewaresResult == null
+    }
+
     suspend fun build() {
         try {
-            val middlewares: Set<HandlerData> = MiddlewareConfiguration.configuration.middlewares
-
-            if (middlewares.firstNotNullOfOrNull { handleMiddleware(it) } == null) {
+            if (handleAllMiddlewares()) {
                 executeFunc(handler, controller, handler, null)
             }
         } catch (e: Exception) {

@@ -44,7 +44,7 @@ val KNest = createApplicationPlugin(
     GlobalStorage.setAppConfig(application.environment.config)
 
     application.routing {
-        FrameworkConfiguration.configuration.controllers.map {
+        FrameworkConfiguration.get().controllers.map {
             ControllerBuilder(this, it).build()
         }
     }

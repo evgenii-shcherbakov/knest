@@ -13,17 +13,20 @@ abstract class PropertyInjector<A : Annotation, P> : SuspendAnnotationInjector<A
 
     protected var exception: Exception? = null
     protected var handler: KFunction<*>? = null
+    protected var middlewareAnnotation: Annotation? = null
 
     fun injectArgs(
         outParameter: KParameter,
         outCall: ApplicationCall,
         outException: Exception?,
-        outHandler: KFunction<*>?
+        outHandler: KFunction<*>?,
+        outMiddlewareAnnotation: Annotation?
     ): PropertyInjector<A, P> {
         parameter = outParameter
         call = outCall
         exception = outException
         handler = outHandler
+        middlewareAnnotation = outMiddlewareAnnotation
 
         return this
     }

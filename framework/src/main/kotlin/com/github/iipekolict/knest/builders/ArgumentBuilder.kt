@@ -17,7 +17,8 @@ class ArgumentBuilder(
     private val controller: Any,
     private val call: ApplicationCall,
     private val exception: Exception?,
-    private val func: KFunction<*>?
+    private val func: KFunction<*>?,
+    private val middlewareAnnotation: Annotation?
 ) {
 
     private suspend fun convertParameterByType(): Any? {
@@ -40,7 +41,10 @@ class ArgumentBuilder(
 
     private suspend fun convertParameterByAnnotation(): Any? {
         return propertyInjectors.firstNotNullOfOrNull {
-            val instance = it.createInstance().injectArgs(parameter, call, exception, func)
+            val instance = it
+                .createInstance()
+                .injectArgs(parameter, call, exception, func, middlewareAnnotation)
+
             if (instance.canActivate()) instance.inject() else null
         }
     }
@@ -71,6 +75,7 @@ class ArgumentBuilder(
             ResHeadersInjector::class,
             ReqPathInjector::class,
             HandlerInjector::class,
+            MiddlewareAnnotationInjector::class,
             *FrameworkConfiguration.configuration.propertyInjectors.toTypedArray()
         )
     }

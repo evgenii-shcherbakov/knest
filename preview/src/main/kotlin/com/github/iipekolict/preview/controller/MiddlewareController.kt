@@ -8,7 +8,7 @@ import com.github.iipekolict.preview.annotations.Check42
 class MiddlewareController {
 
     @Get("check42/{id}")
-    @Check42
+    @Check42("Middleware works!")
     suspend fun getCheck42Middleware(): String {
         return "Middleware didn't work!"
     }

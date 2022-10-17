@@ -1,5 +1,5 @@
-val libraryVersion: String by project
-val libraryGroup: String by project
+val projectVersion: String by project
+val projectGroup: String by project
 
 plugins {
     `java-library`
@@ -8,8 +8,8 @@ plugins {
 }
 
 allprojects {
-    group = libraryGroup
-    version = libraryVersion
+    group = projectGroup
+    version = projectVersion
 
     repositories {
         mavenCentral()

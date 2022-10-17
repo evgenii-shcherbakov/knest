@@ -1,5 +1,6 @@
 package com.github.iipekolict.knest.builders
 
+import com.github.iipekolict.knest.GlobalStorage
 import com.github.iipekolict.knest.injectors.properties.*
 import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
 import io.ktor.http.*
@@ -35,6 +36,7 @@ class ArgumentBuilder(
             ResponseCookies::class.java -> call.response.cookies
             Exception::class.java -> exception?.cause
             KFunction::class.java -> func
+            Application::class.java -> GlobalStorage.getApp()
             else -> null
         }
     }
@@ -76,6 +78,7 @@ class ArgumentBuilder(
             ReqPathInjector::class,
             HandlerInjector::class,
             MiddlewareAnnotationInjector::class,
+            AppInjector::class,
             *FrameworkConfiguration.configuration.propertyInjectors.toTypedArray()
         )
     }

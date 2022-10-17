@@ -3,11 +3,9 @@ package com.github.iipekolict.knest.configuration
 import com.github.iipekolict.knest.configuration.modular.ExceptionConfiguration
 import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
 import com.github.iipekolict.knest.configuration.modular.MiddlewareConfiguration
-import com.github.iipekolict.knest.configuration.plugin.CallLoggingConfiguration
-import com.github.iipekolict.knest.configuration.plugin.ContentNegotiationConfiguration
-import com.github.iipekolict.knest.configuration.plugin.CorsConfiguration
-import com.github.iipekolict.knest.configuration.plugin.SwaggerConfiguration
+import com.github.iipekolict.knest.configuration.plugin.*
 import io.github.smiley4.ktorswaggerui.SwaggerUIPluginConfig
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.*
@@ -28,6 +26,10 @@ class KNestPluginConfiguration {
 
     fun swagger(configuration: SwaggerUIPluginConfig.() -> Unit) {
         SwaggerConfiguration.set(configuration)
+    }
+
+    fun authentication(configuration: AuthenticationConfig.() -> Unit) {
+        AuthenticationConfiguration.set(configuration)
     }
 
     fun exceptionHandling(configuration: ExceptionConfiguration.() -> Unit) {

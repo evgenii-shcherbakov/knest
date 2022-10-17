@@ -59,7 +59,7 @@ class HandlerBuilder(
 
         val response = func.callSuspendBy(args)
 
-        if (response != null) {
+        if (response != null && response != Unit) {
             call.respond(
                 response,
                 TypeInfo(response.javaClass::class, response.javaClass::class.java)

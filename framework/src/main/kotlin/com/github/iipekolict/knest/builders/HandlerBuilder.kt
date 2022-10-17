@@ -2,7 +2,7 @@ package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
 import com.github.iipekolict.knest.annotations.methods.ExceptionHandler
-import com.github.iipekolict.knest.configuration.ExceptionConfiguration
+import com.github.iipekolict.knest.configuration.modular.ExceptionConfiguration
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.http.*
 import io.ktor.server.application.*

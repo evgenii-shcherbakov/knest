@@ -1,8 +1,7 @@
 package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.classes.Controller
-import com.github.iipekolict.knest.builders.injectors.methods.SwaggerInjector
-import com.github.iipekolict.knest.builders.injectors.methods.endpoints.*
+import com.github.iipekolict.knest.injectors.methods.http.*
 import com.github.iipekolict.knest.data.Endpoint
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.github.smiley4.ktorswaggerui.dsl.route
@@ -37,7 +36,7 @@ class ControllerBuilder(private val routing: Routing, private val controller: An
     fun build() {
         routing.route(
             path = controllerAnnotation.path,
-            builder = SwaggerInjector(controller::class).inject()
+            builder = com.github.iipekolict.knest.injectors.methods.SwaggerInjector(controller::class).inject()
         ) {
             endpoints.map {
                 EndpointBuilder(controller, this, it).build()

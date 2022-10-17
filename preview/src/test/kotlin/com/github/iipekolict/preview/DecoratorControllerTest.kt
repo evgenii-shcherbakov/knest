@@ -9,6 +9,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
+import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
@@ -41,6 +43,11 @@ class DecoratorControllerTest {
     @Test
     fun testCallDecorator() = testStringResponse("call", "Call") {
         it == RoutingApplicationCall::class.simpleName
+    }
+
+    @Test
+    fun testAppDecorator() = testStringResponse("app", "App") {
+        it == Application::class.simpleName
     }
 
     @Test
@@ -211,6 +218,21 @@ class DecoratorControllerTest {
 
         assertTrue("Cookies decorator broken") {
             singleCookie == testValue || allCookies?.get(testName) == testValue
+        }
+    }
+
+    @Test
+    fun testAppConfigDecorator() = testApplication {
+        val appConfigValueResponse: String = client.get("/decorator/app-config").bodyAsText()
+        val appConfigResponse: String = client.get("/decorator/app-config/all").bodyAsText()
+
+        assertTrue("Response shouldn't be empty") {
+            appConfigValueResponse.isNotEmpty() && appConfigResponse.isNotEmpty()
+        }
+
+        assertTrue("AppConfig decorator was broken") {
+            appConfigValueResponse == "123" &&
+            appConfigResponse == HoconApplicationConfig::class.simpleName
         }
     }
 }

@@ -12,7 +12,7 @@ class MiddlewareControllerTest {
     private val number = 42
 
     @Test
-    fun testMiddlewares() = testApplication {
+    fun testLocalMiddleware() = testApplication {
         val middlewareResponse: String = client.get("/middleware/check42/$number").bodyAsText()
         val defaultResponse: String = client.get("/middleware/check42/${number * 2}").bodyAsText()
 
@@ -30,6 +30,21 @@ class MiddlewareControllerTest {
             expected = "Middleware not works!",
             actual = defaultResponse,
             message = "Middleware shouldn't execute"
+        )
+    }
+
+    @Test
+    fun testGlobalMiddleware() = testApplication {
+        val middlewareResponse: String = client.get("/middleware/global").bodyAsText()
+
+        assertTrue("Response shouldn't be empty") {
+            middlewareResponse.isNotBlank()
+        }
+
+        assertEquals(
+            expected = "123",
+            actual = middlewareResponse,
+            message = "Global middleware should execute"
         )
     }
 }

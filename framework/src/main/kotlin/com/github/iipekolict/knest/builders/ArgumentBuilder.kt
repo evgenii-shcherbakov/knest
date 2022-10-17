@@ -6,6 +6,7 @@ import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlin.reflect.KFunction
@@ -37,6 +38,7 @@ class ArgumentBuilder(
             Exception::class.java -> exception?.cause
             KFunction::class.java -> func
             Application::class.java -> GlobalStorage.getApp()
+            ApplicationConfig::class.java -> GlobalStorage.getAppConfig()
             else -> null
         }
     }
@@ -79,6 +81,7 @@ class ArgumentBuilder(
             HandlerInjector::class,
             MiddlewareAnnotationInjector::class,
             AppInjector::class,
+            AppConfigInjector::class,
             *FrameworkConfiguration.configuration.propertyInjectors.toTypedArray()
         )
     }

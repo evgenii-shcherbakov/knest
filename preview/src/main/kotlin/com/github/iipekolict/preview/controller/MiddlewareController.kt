@@ -10,6 +10,6 @@ class MiddlewareController {
     @Get("check42/{id}")
     @Check42("Middleware works!")
     suspend fun getCheck42Middleware(): String {
-        return "Middleware didn't work!"
+        return "Middleware not works!"
     }
 }

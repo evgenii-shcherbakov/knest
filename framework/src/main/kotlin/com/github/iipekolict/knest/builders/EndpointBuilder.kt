@@ -1,6 +1,6 @@
 package com.github.iipekolict.knest.builders
 
-import com.github.iipekolict.knest.data.Endpoint
+import com.github.iipekolict.knest.data.EndpointData
 import io.github.smiley4.ktorswaggerui.dsl.route
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -10,7 +10,7 @@ import kotlin.reflect.KFunction
 class EndpointBuilder(
     private val controller: Any,
     private val route: Route,
-    private val endpoint: Endpoint
+    private val endpoint: EndpointData
 ) {
 
     private fun createEndpointHandler(handler: KFunction<*>): Route.() -> Unit = {

@@ -3,32 +3,18 @@ package com.github.iipekolict.knest.configuration.modular
 import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
 import com.github.iipekolict.knest.annotations.methods.ExceptionHandler
 import com.github.iipekolict.knest.configuration.ModularConfiguration
+import com.github.iipekolict.knest.data.HandlerData
 import com.github.iipekolict.knest.validators.ExceptionConfigurationValidator
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberFunctions
 
 object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Configuration>() {
 
-    private var handlers: MutableSet<Handler> = mutableSetOf()
+    private var handlers: MutableSet<HandlerData> = mutableSetOf()
 
-    data class Handler(
-        val container: Any?,
-        val handler: KFunction<*>
-    ) {
+    class Configuration(val handlers: Set<HandlerData>) {
 
-        val fullName: String
-            get() {
-                if (container == null || container::class.simpleName == null) {
-                    return handler.name
-                }
-
-                return "${container::class.simpleName}.${handler.name}"
-            }
-    }
-
-    class Configuration(val handlers: Set<Handler>) {
-
-        val sortedHandlers: Set<Handler>
+        val sortedHandlers: Set<HandlerData>
             get() {
                 val defaultHandler = handlers.find { handler ->
                     handler.handler.annotations.any { it is DefaultExceptionHandler }
@@ -59,8 +45,8 @@ object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Conf
     fun setHandlers(vararg customHandlers: KFunction<*>) {
         handlers.addAll(
             customHandlers.mapNotNull { handler ->
-                if (handlers.any { it.fullName == handler.name }) {
-                    Handler(null, handler)
+                if (handlers.all { it.fullName != handler.name }) {
+                    HandlerData(null, handler)
                 } else {
                     null
                 }
@@ -70,23 +56,25 @@ object ExceptionConfiguration : ModularConfiguration<ExceptionConfiguration.Conf
 
     fun setContainers(vararg customContainers: Any) {
         handlers.addAll(
-            customContainers.map { container ->
-                container::class.declaredMemberFunctions.mapNotNull { method ->
-                    val isHandler: Boolean = method.annotations.any {
-                        it is DefaultExceptionHandler || it is ExceptionHandler
-                    }
+            customContainers
+                .map { container ->
+                    container::class.declaredMemberFunctions.mapNotNull { method ->
+                        val isHandler: Boolean = method.annotations.any {
+                            it is DefaultExceptionHandler || it is ExceptionHandler
+                        }
 
-                    val isExists: Boolean = handlers.any {
-                        it.fullName == "${container::class.simpleName ?: ""}.${method.name}"
-                    }
+                        val isExists: Boolean = handlers.any {
+                            it.fullName == "${container::class.simpleName ?: ""}.${method.name}"
+                        }
 
-                    if (isHandler && !isExists) {
-                        Handler(container, method)
-                    } else {
-                        null
+                        if (isHandler && !isExists) {
+                            HandlerData(container, method)
+                        } else {
+                            null
+                        }
                     }
                 }
-            }.flatten()
+                .flatten()
         )
     }
 }

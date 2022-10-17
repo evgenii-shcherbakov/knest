@@ -2,6 +2,7 @@ package com.github.iipekolict.knest.configuration
 
 import com.github.iipekolict.knest.configuration.modular.ExceptionConfiguration
 import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
+import com.github.iipekolict.knest.configuration.modular.MiddlewareConfiguration
 import com.github.iipekolict.knest.configuration.plugin.CallLoggingConfiguration
 import com.github.iipekolict.knest.configuration.plugin.ContentNegotiationConfiguration
 import com.github.iipekolict.knest.configuration.plugin.CorsConfiguration
@@ -35,5 +36,9 @@ class KNestPluginConfiguration {
 
     fun framework(configuration: FrameworkConfiguration.() -> Unit) {
         FrameworkConfiguration.apply(configuration)
+    }
+
+    fun middleware(configuration: MiddlewareConfiguration.() -> Unit) {
+        MiddlewareConfiguration.apply(configuration)
     }
 }

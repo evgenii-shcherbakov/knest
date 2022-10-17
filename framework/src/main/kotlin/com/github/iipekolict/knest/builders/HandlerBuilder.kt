@@ -2,7 +2,10 @@ package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
 import com.github.iipekolict.knest.annotations.methods.ExceptionHandler
+import com.github.iipekolict.knest.annotations.methods.Middleware
 import com.github.iipekolict.knest.configuration.modular.ExceptionConfiguration
+import com.github.iipekolict.knest.configuration.modular.MiddlewareConfiguration
+import com.github.iipekolict.knest.data.HandlerData
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -48,9 +51,13 @@ class HandlerBuilder(
         }
     }
 
+    private suspend fun executeFunc(func: KFunction<*>, container: Any?, endpointHandler: KFunction<*>?) {
+        return executeFunc(func, container, null, endpointHandler)
+    }
+
     private suspend fun checkExceptionHandler(
         exception: Exception,
-        exceptionHandler: ExceptionConfiguration.Handler
+        exceptionHandler: HandlerData
     ): Boolean? {
         val isDefaultHandler: Boolean = exceptionHandler.handler.annotations.any {
             it is DefaultExceptionHandler
@@ -76,12 +83,9 @@ class HandlerBuilder(
 
     private suspend fun handleException(exception: Exception) {
         val exc = exception.cause as? Exception? ?: exception
+        val exceptionHandlers = ExceptionConfiguration.configuration.sortedHandlers
 
-        val handlersResult = ExceptionConfiguration.configuration.sortedHandlers.firstNotNullOfOrNull {
-            checkExceptionHandler(exc, it)
-        }
-
-        if (handlersResult == null) {
+        if (exceptionHandlers.firstNotNullOfOrNull { checkExceptionHandler(exc, it) } == null) {
             call.respond(
                 status = HttpStatusCode.InternalServerError,
                 message = mapOf("message" to exc.message)
@@ -89,9 +93,25 @@ class HandlerBuilder(
         }
     }
 
+    private suspend fun handleMiddleware(middleware: HandlerData): Boolean? {
+        val middlewareAnnotation: Middleware = middleware.handler.findAnnotation()
+            ?: throw KNestException("Middleware handler should be annotated with 'Middleware' annotation")
+
+        return if (handler.annotations.any { it.instanceOf(middlewareAnnotation.annotation) }) {
+            executeFunc(middleware.handler, middleware.container, handler)
+            true
+        } else {
+            null
+        }
+    }
+
     suspend fun build() {
         try {
-            executeFunc(handler, controller, null, null)
+            val middlewares: Set<HandlerData> = MiddlewareConfiguration.configuration.middlewares
+
+            if (middlewares.firstNotNullOfOrNull { handleMiddleware(it) } == null) {
+                executeFunc(handler, controller, handler)
+            }
         } catch (e: Exception) {
             handleException(e)
         }

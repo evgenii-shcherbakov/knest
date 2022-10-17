@@ -4,6 +4,7 @@ import com.github.iipekolict.knest.KNest
 import com.github.iipekolict.preview.controller.*
 import com.github.iipekolict.preview.exceptions.ExceptionContainer
 import com.github.iipekolict.preview.injectors.HttpVersionInjector
+import com.github.iipekolict.preview.middlewares.MiddlewareContainer
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 
@@ -19,7 +20,8 @@ fun Application.setup() {
                 DecoratorController(),
                 TypedController(),
                 PipeController(),
-                CustomDecoratorController()
+                CustomDecoratorController(),
+                MiddlewareController()
             )
 
             addPropertyInjectors(HttpVersionInjector::class)
@@ -27,6 +29,10 @@ fun Application.setup() {
 
         exceptionHandling {
             setContainers(ExceptionContainer)
+        }
+
+        middleware {
+            setContainers(MiddlewareContainer)
         }
 
         cors {

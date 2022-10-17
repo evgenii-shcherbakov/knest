@@ -1,12 +1,13 @@
 package com.github.iipekolict.knest.injectors.methods
 
 import com.github.iipekolict.knest.annotations.Swagger
-import com.github.iipekolict.knest.data.Endpoint
+import com.github.iipekolict.knest.data.EndpointData
+import com.github.iipekolict.knest.injectors.NonSuspendAnnotationInjector
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
-abstract class EndpointInjector<A : Annotation> : com.github.iipekolict.knest.injectors.NonSuspendAnnotationInjector<A, Endpoint>() {
+abstract class EndpointInjector<A : Annotation> : NonSuspendAnnotationInjector<A, EndpointData>() {
 
     protected lateinit var handler: KFunction<*>
     protected lateinit var controller: Any
@@ -17,12 +18,12 @@ abstract class EndpointInjector<A : Annotation> : com.github.iipekolict.knest.in
         return this
     }
 
-    protected fun buildPaths(path: String, paths: Array<String>): Array<String> {
-        return if (paths.isNotEmpty()) paths else arrayOf(path)
+    protected fun buildPaths(path: String, paths: Array<String>): List<String> {
+        return if (paths.isNotEmpty()) paths.toList() else listOf(path)
     }
 
     protected val swaggerCallback: OpenApiRoute.() -> Unit
-        get() = com.github.iipekolict.knest.injectors.methods.SwaggerInjector(handler).inject()
+        get() = SwaggerInjector(handler).inject()
 
     protected val swaggerAnnotation: Swagger?
         get() = handler.findAnnotation()

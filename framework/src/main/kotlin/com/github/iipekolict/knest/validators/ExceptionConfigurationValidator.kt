@@ -1,12 +1,13 @@
 package com.github.iipekolict.knest.validators
 
 import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
-import com.github.iipekolict.knest.configuration.ExceptionConfiguration
+import com.github.iipekolict.knest.configuration.modular.ExceptionConfiguration
+import com.github.iipekolict.knest.data.HandlerData
 import com.github.iipekolict.knest.exceptions.KNestException
 
 object ExceptionConfigurationValidator : ConfigurationValidator<ExceptionConfiguration.Configuration>() {
 
-    private fun validateHandlers(handlers: Set<ExceptionConfiguration.Handler>) {
+    private fun validateHandlers(handlers: Set<HandlerData>) {
         val defaultHandlersCount = handlers.count { handler ->
             handler.handler.annotations.any {
                 it is DefaultExceptionHandler

@@ -1,10 +1,10 @@
 package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.classes.Controller
-import com.github.iipekolict.knest.builders.injectors.methods.SwaggerInjector
-import com.github.iipekolict.knest.builders.injectors.methods.endpoints.*
-import com.github.iipekolict.knest.data.Endpoint
+import com.github.iipekolict.knest.injectors.methods.http.*
+import com.github.iipekolict.knest.data.EndpointData
 import com.github.iipekolict.knest.exceptions.KNestException
+import com.github.iipekolict.knest.injectors.methods.SwaggerInjector
 import io.github.smiley4.ktorswaggerui.dsl.route
 import io.ktor.server.routing.*
 import kotlin.reflect.full.createInstance
@@ -17,7 +17,7 @@ class ControllerBuilder(private val routing: Routing, private val controller: An
         get() = controller::class.findAnnotation()
             ?: throw KNestException("Controller should be annotated by Controller annotation")
 
-    private val endpoints: List<Endpoint>
+    private val endpoints: List<EndpointData>
         get() {
             return controller::class.declaredMemberFunctions.map { method ->
                 method.annotations.mapNotNull {

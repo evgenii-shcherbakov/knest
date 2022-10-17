@@ -1,6 +1,6 @@
 package com.github.iipekolict.preview.injectors
 
-import com.github.iipekolict.knest.builders.injectors.properties.PropertyInjector
+import com.github.iipekolict.knest.injectors.PropertyInjector
 import com.github.iipekolict.preview.annotations.HttpVersion
 import io.ktor.server.request.*
 import kotlin.reflect.full.findAnnotation

@@ -9,6 +9,7 @@ import com.github.iipekolict.preview.dtos.BodyDto
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.util.*
@@ -19,6 +20,23 @@ class DecoratorController {
     @Get("call")
     suspend fun getCall(@Call call: Any): String {
         return call::class.simpleName ?: "No call"
+    }
+
+    @Get("app")
+    suspend fun getApp(@App app: Application): String {
+        return app::class.simpleName ?: "No app"
+    }
+
+    @Get("app-config")
+    suspend fun getAppConfigValue(
+        @AppConfig("jwt.secret") jwtSecret: ApplicationConfigValue
+    ): String {
+        return jwtSecret.getString()
+    }
+
+    @Get("app-config/all")
+    suspend fun getAppConfig(@AppConfig appConfig: ApplicationConfig): String {
+        return appConfig::class.simpleName ?: "No app config"
     }
 
     @Get("param/{id}")

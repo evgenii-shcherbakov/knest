@@ -2,6 +2,8 @@ package com.github.iipekolict.preview
 
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
@@ -23,6 +25,20 @@ class TypedControllerTest {
         path = "call",
         expectedValue = RoutingApplicationCall::class.simpleName,
         message = "Call injecting broken"
+    )
+
+    @Test
+    fun testApp() = testTypedString(
+        path = "app",
+        expectedValue = Application::class.simpleName,
+        message = "App injecting broken"
+    )
+
+    @Test
+    fun testAppConfig() = testTypedString(
+        path = "app-config",
+        expectedValue = HoconApplicationConfig::class.simpleName,
+        message = "App config injecting broken"
     )
 
     @Test

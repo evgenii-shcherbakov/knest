@@ -8,6 +8,7 @@ import io.ktor.client.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.util.*
@@ -18,6 +19,16 @@ class TypedController {
     @Get("call")
     suspend fun getCall(call: ApplicationCall): String {
         return call::class.simpleName ?: "No call"
+    }
+
+    @Get("app")
+    suspend fun getApp(app: Application): String {
+        return app::class.simpleName ?: "No app"
+    }
+
+    @Get("app-config")
+    suspend fun getAppConfig(appConfig: ApplicationConfig): String {
+        return appConfig::class.simpleName ?: "No app config"
     }
 
     @All("method")

@@ -1,7 +1,7 @@
 package com.github.iipekolict.knest.validators
 
 import com.github.iipekolict.knest.annotations.classes.Controller
-import com.github.iipekolict.knest.configuration.FrameworkConfiguration
+import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
 import com.github.iipekolict.knest.exceptions.KNestException
 import kotlin.reflect.full.findAnnotation
 

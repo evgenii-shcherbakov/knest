@@ -2,9 +2,12 @@ package com.github.iipekolict.knest
 
 import com.github.iipekolict.knest.builders.ControllerBuilder
 import com.github.iipekolict.knest.configuration.*
+import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
+import com.github.iipekolict.knest.configuration.plugin.*
 import io.github.smiley4.ktorswaggerui.SwaggerUI
 import io.ktor.server.application.*
 import io.ktor.server.application.hooks.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.CORS
@@ -31,10 +34,17 @@ val KNest = createApplicationPlugin(
         if (application.pluginOrNull(SwaggerUI) == null) {
             application.install(SwaggerUI, SwaggerConfiguration.get())
         }
+
+        if (application.pluginOrNull(Authentication) == null) {
+            application.install(Authentication, AuthenticationConfiguration.get())
+        }
     }
 
+    GlobalStorage.setApp(application)
+    GlobalStorage.setAppConfig(application.environment.config)
+
     application.routing {
-        FrameworkConfiguration.configuration.controllers.map {
+        FrameworkConfiguration.get().controllers.map {
             ControllerBuilder(this, it).build()
         }
     }

@@ -1,10 +1,12 @@
 package com.github.iipekolict.knest.builders
 
-import com.github.iipekolict.knest.builders.injectors.properties.*
-import com.github.iipekolict.knest.configuration.FrameworkConfiguration
+import com.github.iipekolict.knest.GlobalStorage
+import com.github.iipekolict.knest.injectors.properties.*
+import com.github.iipekolict.knest.configuration.modular.FrameworkConfiguration
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlin.reflect.KFunction
@@ -17,7 +19,8 @@ class ArgumentBuilder(
     private val controller: Any,
     private val call: ApplicationCall,
     private val exception: Exception?,
-    private val func: KFunction<*>?
+    private val func: KFunction<*>?,
+    private val middlewareAnnotation: Annotation?
 ) {
 
     private suspend fun convertParameterByType(): Any? {
@@ -34,13 +37,18 @@ class ArgumentBuilder(
             ResponseCookies::class.java -> call.response.cookies
             Exception::class.java -> exception?.cause
             KFunction::class.java -> func
+            Application::class.java -> GlobalStorage.getApp()
+            ApplicationConfig::class.java -> GlobalStorage.getAppConfig()
             else -> null
         }
     }
 
     private suspend fun convertParameterByAnnotation(): Any? {
         return propertyInjectors.firstNotNullOfOrNull {
-            val instance = it.createInstance().injectArgs(parameter, call, exception, func)
+            val instance = it
+                .createInstance()
+                .injectArgs(parameter, call, exception, func, middlewareAnnotation)
+
             if (instance.canActivate()) instance.inject() else null
         }
     }
@@ -71,7 +79,10 @@ class ArgumentBuilder(
             ResHeadersInjector::class,
             ReqPathInjector::class,
             HandlerInjector::class,
-            *FrameworkConfiguration.configuration.propertyInjectors.toTypedArray()
+            MiddlewareAnnotationInjector::class,
+            AppInjector::class,
+            AppConfigInjector::class,
+            *FrameworkConfiguration.get().propertyInjectors.toTypedArray()
         )
     }
 }

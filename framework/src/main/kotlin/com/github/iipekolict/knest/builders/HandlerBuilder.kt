@@ -2,7 +2,10 @@ package com.github.iipekolict.knest.builders
 
 import com.github.iipekolict.knest.annotations.methods.DefaultExceptionHandler
 import com.github.iipekolict.knest.annotations.methods.ExceptionHandler
-import com.github.iipekolict.knest.configuration.ExceptionConfiguration
+import com.github.iipekolict.knest.annotations.methods.Middleware
+import com.github.iipekolict.knest.configuration.modular.ExceptionConfiguration
+import com.github.iipekolict.knest.configuration.modular.MiddlewareConfiguration
+import com.github.iipekolict.knest.data.HandlerData
 import com.github.iipekolict.knest.exceptions.KNestException
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -23,10 +26,18 @@ class HandlerBuilder(
         func: KFunction<*>,
         container: Any?,
         exception: Exception?,
-        endpointHandler: KFunction<*>?
+        endpointHandler: KFunction<*>?,
+        middlewareAnnotation: Annotation?
     ): Map<KParameter, Any?> {
         return func.parameters.associateWith {
-            ArgumentBuilder(it, container ?: controller, call, exception, endpointHandler)
+            ArgumentBuilder(
+                parameter = it,
+                controller = container ?: controller,
+                call = call,
+                exception = exception,
+                func = endpointHandler,
+                middlewareAnnotation = middlewareAnnotation
+            )
                 .build()
         }
     }
@@ -35,53 +46,81 @@ class HandlerBuilder(
         func: KFunction<*>,
         container: Any?,
         exception: Exception?,
-        endpointHandler: KFunction<*>?
-    ) {
-        val args: Map<KParameter, Any?> = getArguments(func, container, exception, endpointHandler)
+        endpointHandler: KFunction<*>?,
+        middlewareAnnotation: Annotation?
+    ): Boolean? {
+        val args: Map<KParameter, Any?> = getArguments(
+            func,
+            container,
+            exception,
+            endpointHandler,
+            middlewareAnnotation
+        )
+
         val response = func.callSuspendBy(args)
 
-        if (response !== null) {
+        if (response != null && response != Unit) {
             call.respond(
                 response,
                 TypeInfo(response.javaClass::class, response.javaClass::class.java)
             )
+
+            return true
         }
+
+        return null
+    }
+
+    private suspend fun executeFunc(
+        func: KFunction<*>,
+        container: Any?,
+        endpointHandler: KFunction<*>?,
+        middlewareAnnotation: Annotation?
+    ): Boolean? {
+        return executeFunc(func, container, null, endpointHandler, middlewareAnnotation)
     }
 
     private suspend fun checkExceptionHandler(
         exception: Exception,
-        exceptionHandler: ExceptionConfiguration.Handler
+        exceptionHandler: HandlerData
     ): Boolean? {
         val isDefaultHandler: Boolean = exceptionHandler.handler.annotations.any {
             it is DefaultExceptionHandler
         }
 
-        return if (!isDefaultHandler) {
-            val excAnnotation = exceptionHandler.handler.findAnnotation<ExceptionHandler>()
-                ?: throw KNestException(
-                    "Not provided 'ExceptionHandler' annotation for exception handler"
-                )
-
-            if (exception.instanceOf(excAnnotation.type)) {
-                executeFunc(exceptionHandler.handler, exceptionHandler.container, exception, handler)
-                true
-            } else {
-                null
-            }
-        } else {
-            executeFunc(exceptionHandler.handler, exceptionHandler.container, exception, handler)
-            true
+        if (isDefaultHandler) {
+            return executeFunc(
+                func = exceptionHandler.handler,
+                container = exceptionHandler.container,
+                exception = exception,
+                endpointHandler = handler,
+                middlewareAnnotation = null
+            )
         }
+
+        val excAnnotation = exceptionHandler.handler.findAnnotation<ExceptionHandler>()
+            ?: throw KNestException(
+                "Not provided 'ExceptionHandler' annotation for exception handler"
+            )
+
+        if (exception.instanceOf(excAnnotation.type)) {
+            return executeFunc(
+                func = exceptionHandler.handler,
+                container = exceptionHandler.container,
+                exception = exception,
+                endpointHandler = handler,
+                middlewareAnnotation = null
+            )
+        }
+
+        return null
     }
 
     private suspend fun handleException(exception: Exception) {
         val exc = exception.cause as? Exception? ?: exception
+        val exceptionHandlers = ExceptionConfiguration.get().sortedHandlers
 
-        val handlersResult = ExceptionConfiguration.configuration.sortedHandlers.firstNotNullOfOrNull {
-            checkExceptionHandler(exc, it)
-        }
-
-        if (handlersResult == null) {
+        if (exceptionHandlers.firstNotNullOfOrNull { checkExceptionHandler(exc, it) } == null) {
             call.respond(
                 status = HttpStatusCode.InternalServerError,
                 message = mapOf("message" to exc.message)
@@ -89,9 +128,47 @@ class HandlerBuilder(
         }
     }
 
+    private suspend fun handleMiddleware(middleware: HandlerData): Boolean? {
+        val middlewareAnnotation: Middleware = middleware.handler.findAnnotation()
+            ?: throw KNestException("Middleware handler should be annotated with 'Middleware' annotation")
+
+        val matchedAnnotation: Annotation? = handler.annotations.find {
+            it.instanceOf(middlewareAnnotation.annotation)
+        }
+
+        if (matchedAnnotation != null) {
+            return executeFunc(
+                func = middleware.handler,
+                container = middleware.container,
+                endpointHandler = handler,
+                middlewareAnnotation = matchedAnnotation
+            )
+        }
+
+        return null
+    }
+
+    private suspend fun handleAllMiddlewares(): Boolean {
+        val middlewareConfiguration = MiddlewareConfiguration.get()
+
+        val globalMiddlewaresResult = middlewareConfiguration.globalMiddlewares.firstNotNullOfOrNull {
+            executeFunc(it.handler, it.container, handler, null)
+        }
+
+        if (globalMiddlewaresResult == true) return false
+
+        val middlewaresResult = middlewareConfiguration.middlewares.firstNotNullOfOrNull {
+            handleMiddleware(it)
+        }
+
+        return middlewaresResult == null
+    }
+
     suspend fun build() {
         try {
-            executeFunc(handler, controller, null, null)
+            if (handleAllMiddlewares()) {
+                executeFunc(handler, controller, handler, null)
+            }
         } catch (e: Exception) {
             handleException(e)
         }

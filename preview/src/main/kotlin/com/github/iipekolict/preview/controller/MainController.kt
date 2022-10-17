@@ -16,9 +16,4 @@ class MainController {
     suspend fun healthCheck(): Map<String, String> {
         return mapOf("status" to "ok")
     }
-
-    @Get("array")
-    suspend fun getArray(): Array<String> {
-        return arrayOf("123")
-    }
 }

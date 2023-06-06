@@ -1,28 +1,36 @@
-name: Release
+name: 'Release'
 
 on:
   push:
-    tags: ['*']
+    branches:
+      - 'main'
+
+env:
+  KEYSTORE_HOST: '${{ secrets.KEYSTORE_HOST }}'
+  KEYSTORE_ACCESS_TOKEN: '${{ secrets.KEYSTORE_ACCESS_TOKEN }}'
 
 jobs:
   Release:
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
+
+    permissions:
+      contents: 'write'
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - name: 'Load code'
+        uses: 'actions/checkout@v3'
+        with:
+          fetch-depth: 2
+      - name: 'Setup Java'
+        uses: 'actions/setup-java@v2'
         with:
           distribution: 'zulu'
-          java-version: 18
-      - name: Get git tag
-        uses: olegtarasov/get-tag@v2.1
-      - name: Run tests
-        run: ./gradlew test
-      - name: Build
-        run: ./gradlew build
-      - name: Create release
-        uses: 'marvinpinto/action-automatic-releases@latest'
-        with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: '${{ env.GIT_TAG_NAME }}'
-          prerelease: false
+          java-version: 19
+      - name: 'Prebuild'
+        run: 'chmod +x ./gradlew'
+      - name: 'Run tests'
+        run: './gradlew test'
+      - name: 'Build'
+        run: './gradlew build'
+      - name: 'Publish'
+        run: 'chmod +x scripts/publish.sh && scripts/publish.sh'

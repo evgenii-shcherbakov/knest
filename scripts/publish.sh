@@ -80,14 +80,14 @@ update_git_branch() {
 }
 
 main() {
-#  setup_git
+  setup_git
   chmod +x ./gradlew || exit 1
   update_version
-#  load_publish_properties
-#  add_publish_properties
-#  publish
-#  restore_original_properties
-#  update_git_branch
+  load_publish_properties
+  add_publish_properties
+  publish
+  restore_original_properties
+  update_git_branch
 }
 
 main

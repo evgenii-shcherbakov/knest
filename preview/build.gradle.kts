@@ -5,7 +5,7 @@ val swaggerVersion: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.8.21"
     id("io.ktor.plugin") version "2.1.2"
 }
 

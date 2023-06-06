@@ -10,11 +10,32 @@
 </p>
 
 <p align="center">
-    <a href="https://jitpack.io/#IIPEKOLICT/knest" target="_blank">
-        <img src="https://jitpack.io/v/IIPEKOLICT/knest.svg" alt="JitPack version" />
+    <a 
+        href="https://jitpack.io/#IIPEKOLICT/knest" 
+        target="_blank"
+    >
+        <img 
+            src="https://jitpack.io/v/IIPEKOLICT/knest.svg" 
+            alt="JitPack version" 
+        />
     </a>
-    <a href="https://raw.githubusercontent.com/IIPEKOLICT/knest/main/LICENSE" target="_blank">
-        <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Package License" />
+    <a 
+        href="https://central.sonatype.com/artifact/io.github.evgenii-shcherbakov/knest" 
+        target="_blank"
+    >
+        <img 
+            src="https://maven-badges.herokuapp.com/maven-central/io.github.evgenii-shcherbakov/knest/badge.svg?style=flat" 
+            alt="Maven Central version" 
+        />
+    </a>
+    <a 
+        href="https://raw.githubusercontent.com/IIPEKOLICT/knest/main/LICENSE" 
+        target="_blank"
+    >
+        <img 
+            src="https://img.shields.io/badge/license-MIT-green.svg" 
+            alt="Package License" 
+        />
     </a>
 </p>
 
@@ -39,28 +60,18 @@ use fast and lightweight <a href="https://ktor.io/" target="_blank">Ktor</a> on
 ## Getting started
 
 - Create new Ktor Server application
-- Add JitPack repository to project build.gradle.kts file
-```kotlin
-repositories {
-    // ...
-
-    maven {
-        setUrl("https://jitpack.io")
-    }
-}
-```
 - Add framework dependency to ktor app build.gradle.kts
 ```kotlin
 dependencies {
     // ...
-    implementation("com.github.IIPEKOLICT:knest:$version")
+    implementation('io.github.evgenii-shcherbakov:knest:0.1.0')
 }
 ```
 - Install and configure KNest plugin to your application
 ```kotlin
 package com.example
 
-import com.github.iipekolict.knest.KNest
+import io.github.evgenii_shcherbakov.knest.KNest
 import io.ktor.http.*
 import io.ktor.server.netty.EngineMain
 import io.ktor.server.application.*
@@ -76,7 +87,7 @@ fun Application.module() {
 ```
 
 You can see more examples how to use it in 
-<a href="https://github.com/IIPEKOLICT/knest/tree/main/preview" target="_blank">preview module</a>.
+<a href="https://github.com/evgenii-shcherbakov/knest/tree/main/preview" target="_blank">preview module</a>.
 
 ## License
 
